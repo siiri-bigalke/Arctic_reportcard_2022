@@ -13,6 +13,14 @@ from cartopy.util import add_cyclic_point
 #        print('n = ', n)
 #        print('row, col = ', row, col)
 
+'''
+# 2021-2022 Composites
+ond = ds1.sel(time = slice('2021-10','2021-12')).mean('time') * 100 * 92
+jfm = ds1.sel(time = slice('2022-01','2022-03')).mean('time') * 100 * 90
+amj = ds1.sel(time = slice('2022-04','2022-06')).mean('time') * 100 * 91
+jas = ds1.sel(time = slice('2022-07','2022-09')).mean('time') * 100 * 92
+'''
+
 
 # ---- Get coordinates from original datafile ----
 pwd = '/work2/Reanalysis/ERA5/ERA5_monthly/monolevel/'+ \
@@ -23,7 +31,6 @@ ds = xr.open_dataset(pwd).sel(
         longitude=slice(0, 360))['tp']
 
 
-
 # ==========================
 '''     Load ERA5 Data  '''
 # ==========================
@@ -31,12 +38,13 @@ lon = ds.coords['longitude']
 lat = ds.coords['latitude']
 
 names = ['ond', 'jfm', 'amj', 'jas']
+ndays = [92, 90, 91, 92]
 seasons = []
 sig = []
 
 for i, snx in enumerate(names):
     slope = np.load('binary_files/v2.'+snx+'theilslopes.arctic.slope.npy')
-    s = slope.reshape(141, 1440) * 30000 # converting to mm/decade
+    s = slope.reshape(141, 1440) * ndays[i] * 100 # converting to seasonal cm/decade
     seasons.append(s)
 
     pvalue = np.load('binary_files/v2.'+snx+'theilsloeps.arctic.pvalue.npy')
@@ -97,7 +105,7 @@ for col in range(2):
         ax[col,row].set_title(titles[n])
         cf = ax[col,row].contourf(X,Y, c_seasons[n], 
                           cmap = 'BrBG', 
-                          levels = np.arange(-2, 2.01, 0.01),
+                          levels = np.arange(-1, 1.01, 0.01),
                           extend = 'both', 
                           transform=tcrs)
 
@@ -124,13 +132,14 @@ cbar_ax = fig.add_axes([0.87,
 
 cbar = fig.colorbar(cf, 
                     orientation='vertical',
-                    cax=cbar_ax)
+                    cax=cbar_ax,
+                    ticks = [-1, -0.5, 0, 0.5, 1])
+
+cbar.ax.set_yticklabels(['-1', '-0.5', '0', '0.5', '1'])
+cbar.ax.set_ylabel('Seasonal total precipitation (cm) \n trend per decade (1950-2022)')
 
 
-cbar.ax.set_ylabel('Precipitation (mm) trend per decade (1950-2022)')
-
-
-plt.savefig('figs/v2.arctic.preciptrend.1950-2022.era5.png', dpi=500)
+plt.savefig('figs/v3.arctic.preciptrend.1950-2022.era5.png', dpi=500)
 plt.show()
 exit()
 
