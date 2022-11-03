@@ -136,7 +136,7 @@ cbar = fig.colorbar(cf,
                     ticks = [-1, -0.5, 0, 0.5, 1])
 
 cbar.ax.set_yticklabels(['-1', '-0.5', '0', '0.5', '1'])
-cbar.ax.set_ylabel('Seasonal total precipitation (cm) \n trend per decade (1950-2022)')
+cbar.ax.set_ylabel('Seasonal total precipitation (cm) \n trend per year (1950-2022)')
 
 
 plt.savefig('figs/v3.arctic.preciptrend.1950-2022.era5.png', dpi=500)
