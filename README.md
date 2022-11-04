@@ -27,7 +27,7 @@ Script for calculating trend:
 calc.trend.era5.precipitation.1950-2022.py
 ```
 
-[Example plot](arctic.2021-2022.precip.anomalies.era5.png)
+![Example plot](arctic.2021-2022.precip.anomalies.era5.png)
 
 
 ![Example plot 2](weighted.arctic.precip.departure1991-2020.png)
