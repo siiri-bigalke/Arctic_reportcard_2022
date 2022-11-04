@@ -19,7 +19,7 @@ Seasonal precipitation trends (cm/year) from ERA5 reanalysis with significance a
 Script for calculating trend:
 '''calc.trend.era5.precipitation.1950-2022.py'''
 
-![Example plot](github.com/siiri-bigalke/Arctic_reportcard_2022/arctic.2021-2022.precip.anomalies.era5.png)
+![Example plot](arctic.2021-2022.precip.anomalies.era5.png)
 
 
-![Example plot 2](github.com/siiri-bigalke/Arctic_reportcard_2022/weighted.arctic.precip.departure1991-2020.png)
+![Example plot 2](weighted.arctic.precip.departure1991-2020.png)
