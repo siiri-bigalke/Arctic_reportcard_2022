@@ -19,7 +19,6 @@ ds = xr.open_dataset(pwd).sel(
         longitude=slice(0, 360))['tp']
 
 ds = ds.mean('expver') # September 2022 data is ERA5T as of 10.13.2022
-
 lon = ds.coords['longitude']
 lat = ds.coords['latitude']
 X, Y = np.meshgrid(lon, lat)
@@ -33,7 +32,8 @@ X, Y = np.meshgrid(lon, lat)
 def seasonal_trend(ds, months, name):
 
     s = ds[ds.time.dt.month.isin(months)]  # select seasonal month range
-    ds = s.groupby('time.year').sum('time')    # season sum
+
+    ds = s.groupby('time.year').mean('time')    # seasonal average
     t = s.time
     t = np.arange(0, len(ds.year))
 
@@ -48,9 +48,11 @@ def seasonal_trend(ds, months, name):
             result = stats.linregress(t, grid)
             slope = np.append(slope, result[0])
             pvalue = np.append(pvalue, result[3])
+    
+    # For saving seasaonl average
+    np.save('binary_files/saverage.'+ name + 'theilslopes.arctic.slope.npy', slope)
+    np.save('binary_files/saverage.'+ name + 'theilslopes.arctic.pvalue.npy', pvalue)
    
-    np.save('binary_files/v2.'+ name + 'theilslopes.arctic.slope.npy', slope)
-    np.save('binary_files/v2.'+ name + 'theilsloeps.arctic.pvalue.npy', pvalue)
     print('FINISHED', name)
  
     return(slope, pvalue)
@@ -60,9 +62,6 @@ slope_ond, p_ond = seasonal_trend(ds, [10,11,12], 'ond')
 slope_jfm, p_jfm = seasonal_trend(ds, [1, 2, 3], 'jfm')
 slope_amj, p_amj = seasonal_trend(ds, [4, 5, 6], 'amj')
 slope_jas, P_jas = seasonal_trend(ds, [7, 8, 9], 'jas')
-#slope_annual, P_annual = seasonal_trend(ds, 
-#                                        [1,2,3,4,5,6,7,8,9,10,11,12],
-#                                        'annual')
                                         
 
 print('done')
