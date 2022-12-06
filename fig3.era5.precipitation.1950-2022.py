@@ -6,20 +6,8 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.util import add_cyclic_point
 
-#n = -1
-#for row in range(2):
-#    for col in range(2):
-#        n+=1
-#        print('n = ', n)
-#        print('row, col = ', row, col)
 
-'''
-# 2021-2022 Composites
-ond = ds1.sel(time = slice('2021-10','2021-12')).mean('time') * 100 * 92
-jfm = ds1.sel(time = slice('2022-01','2022-03')).mean('time') * 100 * 90
-amj = ds1.sel(time = slice('2022-04','2022-06')).mean('time') * 100 * 91
-jas = ds1.sel(time = slice('2022-07','2022-09')).mean('time') * 100 * 92
-'''
+# !!!! activate climate2.2 environment !!!!
 
 
 # ---- Get coordinates from original datafile ----
@@ -43,11 +31,11 @@ seasons = []
 sig = []
 
 for i, snx in enumerate(names):
-    slope = np.load('binary_files/v2.'+snx+'theilslopes.arctic.slope.npy')
-    s = slope.reshape(141, 1440) * ndays[i] * 100 # converting to seasonal cm/decade
+    slope = np.load('binary_files/saverage.'+snx+'theilslopes.arctic.slope.npy')
+    s = slope.reshape(141, 1440) * ndays[i] * 1000 # converting to seasonal cm/decade
     seasons.append(s)
 
-    pvalue = np.load('binary_files/v2.'+snx+'theilsloeps.arctic.pvalue.npy')
+    pvalue = np.load('binary_files/saverage.'+snx+'theilslopes.arctic.pvalue.npy')
     p = pvalue.reshape(141, 1440)
     sig.append(p)
 
@@ -57,7 +45,7 @@ c_seasons = []
 c_sig = []
 
 for sdx, season in enumerate(seasons):
-    print('addinc cyclic point to season ', sdx)
+    print('adding cyclic point to season ', sdx)
     data, lon_c = add_cyclic_point(seasons[sdx], coord = lon)
     sigdata, lon_c = add_cyclic_point(sig[sdx], coord = lon)
 
@@ -105,7 +93,8 @@ for col in range(2):
         ax[col,row].set_title(titles[n])
         cf = ax[col,row].contourf(X,Y, c_seasons[n], 
                           cmap = 'BrBG', 
-                          levels = np.arange(-1, 1.01, 0.01),
+                          #levels = np.arange(-1, 1.01, 0.01),
+                          levels = np.arange(-4, 4.1, 0.1),
                           extend = 'both', 
                           transform=tcrs)
 
@@ -123,23 +112,21 @@ fig.subplots_adjust(top = 0.95,
                     hspace = 0.02,
                     wspace = 0.04)
 
-#fig.subplots_adjust(right=0.8)
 
 cbar_ax = fig.add_axes([0.87, 
                         0.25, 
                         0.03, 
-                        0.5])#0.27, 0.07, 0.5, 0.02])
+                        0.5])
 
 cbar = fig.colorbar(cf, 
                     orientation='vertical',
                     cax=cbar_ax,
-                    ticks = [-1, -0.5, 0, 0.5, 1])
+                    ticks = [-4, -2, 0, 2, 4])
 
-cbar.ax.set_yticklabels(['-1', '-0.5', '0', '0.5', '1'])
-cbar.ax.set_ylabel('Seasonal total precipitation (cm) \n trend per year (1950-2022)')
+cbar.ax.set_ylabel('Seasonal total precipitation (cm) \n trend per decade (1950-2022)')
 
 
-plt.savefig('figs/v3.arctic.preciptrend.1950-2022.era5.png', dpi=500)
+plt.savefig('figs/saverage.arctic.preciptrend.1950-2022.era5.png', dpi=500)
 plt.show()
 exit()
 
